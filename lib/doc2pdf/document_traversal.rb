@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Doc2pdf
+  # Walks each text section of a document.
   class DocumentTraversal
     include Enumerable
 
@@ -10,11 +11,11 @@ module Doc2pdf
 
     def each(&block)
       paragraphs do |text|
-        yield text
+        block.call(text)
       end
 
       tables do |text|
-        yield text
+        block.call(text)
       end
     end
 

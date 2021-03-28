@@ -3,13 +3,14 @@
 require_relative "doc2pdf/version"
 require_relative "doc2pdf/document"
 require_relative "doc2pdf/document_traversal"
-require 'libreconv'
+require "libreconv"
 
+# Module containing some helper methods that searches and replaces placeholders in a .doc file.
 module Doc2pdf
   class Error < StandardError; end
 
   # Example: "foo {bar} spam {egg} asd" -> ['bar', 'egg']
-  PLACEHOLDER_PATTERN = /{(\w*)}/
+  PLACEHOLDER_PATTERN = /{(\w*)}/.freeze
 
   def self.extract(document:)
     DocumentTraversal.new(document: document).map do |item|
@@ -20,7 +21,7 @@ module Doc2pdf
   def self.replace!(document:)
     DocumentTraversal.new(document: document).each do |item|
       search(item.text).each do |occurrence|
-        item.substitute(occurrence, 'QUALCOSA')
+        item.substitute(occurrence, "QUALCOSA")
       end
     end
 
@@ -40,7 +41,7 @@ module Doc2pdf
 
     {
       pdf: pdf_path,
-      doc: doc_path,
+      doc: doc_path
     }
   end
 

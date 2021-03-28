@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'docx'
+require "docx"
 
 module Doc2pdf
+  # Wraps a Docx::Document.
   class Document
     attr_reader :docx
 
