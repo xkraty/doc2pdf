@@ -18,20 +18,20 @@ module Doc2pdf
     end.flatten
   end
 
-  def self.replace!(document:)
+  def self.replace!(document:, replacer:)
     DocumentTraversal.new(document: document).each do |item|
       search(item.text).each do |occurrence|
-        item.substitute(occurrence, "QUALCOSA")
+        item.substitute(occurrence, replacer.call(key: occurrence))
       end
     end
 
     document
   end
 
-  def self.replace_and_save!(document:, output_base_path:)
+  def self.replace_and_save!(document:, output_base_path:, replacer:)
     FileUtils.mkdir_p(File.dirname(output_base_path))
 
-    replace!(document: document)
+    replace!(document: document, replacer: replacer)
 
     doc_path = "#{output_base_path}.doc"
     pdf_path = "#{output_base_path}.pdf"
