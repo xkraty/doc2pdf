@@ -33,7 +33,7 @@ module Doc2pdf
       area.tables.each do |table|
         table.rows.each do |row|
           row.cells.each do |cell|
-            paragraphs(cell, &block)
+            paragraphs(&block)
           end
         end
       end
