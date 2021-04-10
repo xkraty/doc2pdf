@@ -10,7 +10,7 @@ module Doc2pdf
   class Error < StandardError; end
 
   # Example: "foo {bar} spam {egg} asd" -> ['bar', 'egg']
-  PLACEHOLDER_PATTERN = /{(\w*)}/.freeze
+  PLACEHOLDER_PATTERN = /({\w*})/.freeze
 
   def self.extract(document:)
     DocumentTraversal.new(document: document).map do |item|
@@ -21,7 +21,9 @@ module Doc2pdf
   def self.replace!(document:, replacer:)
     DocumentTraversal.new(document: document).each do |item|
       search(item.text).each do |occurrence|
-        item.substitute(occurrence, replacer.call(key: occurrence))
+        tm = replacer.call(key: occurrence)
+        puts "Occurrence #{occurrence}, Replace #{tm}"
+        item.substitute(occurrence, tm)
       end
     end
 
@@ -31,10 +33,10 @@ module Doc2pdf
   def self.replace_and_save!(document:, output_base_path:, replacer:)
     FileUtils.mkdir_p(File.dirname(output_base_path))
 
-    replace!(document: document, replacer: replacer)
+    document = replace!(document: document, replacer: replacer)
 
-    doc_path = "#{output_base_path}.doc"
-    pdf_path = "#{output_base_path}.pdf"
+    doc_path = "#{output_base_path}/file.doc"
+    pdf_path = "#{output_base_path}/file.pdf"
 
     document.save(path: doc_path) # saves a copy
     Libreconv.convert(doc_path, pdf_path) # converts the doc copy into a pdf copy

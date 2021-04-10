@@ -6,7 +6,7 @@ require "uri"
 module Doc2pdf
   # Wraps a ::Docx::Document.
   class Document
-    attr_reader :docx
+    attr_accessor :docx
 
     def initialize(file:)
       file = load_from_uri(file)
@@ -25,7 +25,5 @@ module Doc2pdf
 
       URI.open(file)
     end
-
-    attr_writer :docx
   end
 end
