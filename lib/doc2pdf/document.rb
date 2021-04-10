@@ -21,7 +21,7 @@ module Doc2pdf
     private
 
     def load_from_uri(file)
-      return file unless file =~ URI::regexp
+      return file unless file =~ URI::DEFAULT_PARSER.make_regexp
 
       URI.open(file)
     end
