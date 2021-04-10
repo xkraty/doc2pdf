@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
 require "docx"
+require "uri"
 
 module Doc2pdf
-  # Wraps a Docx::Document.
+  # Wraps a ::Docx::Document.
   class Document
     attr_reader :docx
 
     def initialize(file:)
-      self.docx = Docx::Document.open(file)
+      file = load_from_uri(file)
+
+      self.docx = ::Docx::Document.open(file)
     end
 
     def save(path:)
@@ -16,6 +19,12 @@ module Doc2pdf
     end
 
     private
+
+    def load_from_uri(file)
+      return file unless file =~ URI::regexp
+
+      URI.open(file)
+    end
 
     attr_writer :docx
   end
