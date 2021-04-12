@@ -9,8 +9,8 @@ require "libreconv"
 module Doc2pdf
   class Error < StandardError; end
 
-  # Example: "foo {bar} spam {egg} asd" -> ['bar', 'egg']
-  PLACEHOLDER_PATTERN = /{(\w*)}/.freeze
+  # Example: "foo {bar} spam {egg} asd" -> ['{bar}', '{egg}']
+  PLACEHOLDER_PATTERN = /({\w*})/.freeze
 
   def self.extract(document:)
     DocumentTraversal.new(document: document).map do |item|

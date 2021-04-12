@@ -79,10 +79,8 @@ document = Doc2pdf::Document.new(file: 'my_document.doc')
 # passing the file stream
 document = Doc2pdf::Document.new(file: File.open('my_document.doc'))
 
-# passing the stream of a remote resource
-require 'open-uri'
-
-document = Doc2pdf::Document.new(file: URI.open('https://mywebsite.com/my_document.doc'))
+# passing the uri of a remote resource
+document = Doc2pdf::Document.new(file: 'https://mywebsite.com/my_document.doc')
 ```
 
 With the _replacer_ in place and a document, you can then replace all the placeholders in your document and produce the putput files:

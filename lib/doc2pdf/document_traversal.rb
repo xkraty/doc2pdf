@@ -10,7 +10,7 @@ module Doc2pdf
     end
 
     def each(&block)
-      paragraphs do |text|
+      paragraphs(docx) do |text|
         block.call(text)
       end
 
@@ -23,14 +23,14 @@ module Doc2pdf
 
     attr_accessor :document
 
-    def paragraphs(&block)
+    def paragraphs(area, &block)
       area.paragraphs.each do |paragraph|
         paragraph.each_text_run(&block)
       end
     end
 
     def tables(&block)
-      area.tables.each do |table|
+      docx.tables.each do |table|
         table.rows.each do |row|
           row.cells.each do |cell|
             paragraphs(cell, &block)
@@ -39,7 +39,7 @@ module Doc2pdf
       end
     end
 
-    def area
+    def docx
       document.docx
     end
   end
