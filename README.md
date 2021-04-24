@@ -94,14 +94,33 @@ document = # ...
 Doc2pdf.replace_and_save!(
   document: document,
   replacer: replacer,
-  output_base_path: './path/to/document'
+  output_path: './path/to/document.pdf'
 )
 ```
 
-This will produce:
+This will write the PDF to the given `output_path`.
 
-- `./path/to/document.doc`
-- `./path/to/document.pdf`
+### Temp files
+
+Note that in environment in which you can just write to `/tmp` (like Heroku), you can use `Tempfile` like this:
+
+```ruby
+require 'doc2pdf'
+require 'tempfile'
+
+replacer = # ...
+document = # ...
+
+output = Tempfile.new
+
+Doc2pdf.replace_and_save!(
+  document: document,
+  replacer: replacer,
+  output_path: output.path
+)
+```
+
+At which point you can use `output` to read the content of the generated PDF.
 
 ## Development
 

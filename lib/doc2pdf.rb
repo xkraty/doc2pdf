@@ -4,6 +4,7 @@ require_relative "doc2pdf/version"
 require_relative "doc2pdf/document"
 require_relative "doc2pdf/document_traversal"
 require "libreconv"
+require "tempfile"
 
 # Module containing some helper methods that searches and replaces placeholders in a .doc file.
 module Doc2pdf
@@ -28,21 +29,19 @@ module Doc2pdf
     document
   end
 
-  def self.replace_and_save!(document:, output_base_path:, replacer:)
-    FileUtils.mkdir_p(File.dirname(output_base_path))
+  def self.replace_and_save!(document:, output_path:, replacer:)
+    FileUtils.mkdir_p(File.dirname(output_path))
 
     replace!(document: document, replacer: replacer)
 
-    doc_path = "#{output_base_path}.doc"
-    pdf_path = "#{output_base_path}.pdf"
-
-    document.save(path: doc_path) # saves a copy
-    Libreconv.convert(doc_path, pdf_path) # converts the doc copy into a pdf copy
-
-    {
-      pdf: pdf_path,
-      doc: doc_path
-    }
+    begin
+      temp_doc = Tempfile.new
+      document.save(path: temp_doc.path) # saves a copy
+      Libreconv.convert(temp_doc.path, output_path) # converts the doc copy into a pdf copy
+    ensure
+      temp_doc.close
+      temp_doc.unlink
+    end
   end
 
   def self.search(text)
