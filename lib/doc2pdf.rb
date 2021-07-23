@@ -12,7 +12,8 @@ module Doc2pdf
   class Error < StandardError; end
 
   # Example: "foo {bar} spam {egg} asd" -> ['{bar}', '{egg}']
-  PLACEHOLDER_PATTERN = /({\w*})/.freeze
+  PLACEHOLDER_CONTENT_REGEXP = /{(\w*)}/.freeze
+  PLACEHOLDER_REGEXP = /({\w*})/.freeze
 
   def self.extract(document:)
     DocumentTraversal.new(document: document).map do |item|
@@ -23,7 +24,11 @@ module Doc2pdf
   def self.replace!(document:, replacer:)
     DocumentTraversal.new(document: document).each do |item|
       search(item.text).each do |occurrence|
-        item.substitute(occurrence, replacer.call(key: occurrence))
+        # occurrence is '{hello}' -> key is 'hello'
+        key = PLACEHOLDER_CONTENT_REGEXP.match(occurrence)[1]
+
+        replacement = replacer.call(key: key)
+        item.substitute(occurrence, replacement)
       end
     end
 
@@ -47,7 +52,7 @@ module Doc2pdf
   end
 
   def self.search(text)
-    text.scan(PLACEHOLDER_PATTERN).flatten
+    text.scan(PLACEHOLDER_REGEXP).flatten
   end
 
   # private
