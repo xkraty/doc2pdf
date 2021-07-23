@@ -4,8 +4,8 @@ require_relative "doc2pdf/version"
 require_relative "doc2pdf/document"
 require_relative "doc2pdf/document_traversal"
 require "libreconv"
-require 'tempfile'
-require 'open-uri'
+require "tempfile"
+require "open-uri"
 
 # Module containing some helper methods that searches and replaces placeholders in a .doc file.
 module Doc2pdf
@@ -43,17 +43,20 @@ module Doc2pdf
 
     replace!(document: document, replacer: replacer)
 
-    begin
-      temp_doc = Tempfile.new
-      document.save(path: temp_doc.path) # saves a copy
-      Libreconv.convert(temp_doc.path, output_path) # converts the doc copy into a pdf copy
-    rescue
-      temp_doc.close
-      temp_doc.unlink
-    end
+    convert_to_pdf(document, output_path)
   end
 
   def self.search(text)
     text.scan(PLACEHOLDER_PATTERN).flatten
+  end
+
+  # private
+  def self.convert_to_pdf(document, output_path)
+    temp_doc = Tempfile.new
+    document.save(path: temp_doc.path) # saves a copy
+    Libreconv.convert(temp_doc.path, output_path) # converts the doc copy into a pdf copy
+  rescue StandardError
+    temp_doc.close
+    temp_doc.unlink
   end
 end
