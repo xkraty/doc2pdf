@@ -68,40 +68,40 @@ replacer.call(key: 'asd') # => NoMethodError (undefined method `asd' for "Foo":S
 
 Pick you poison. 😄
 
-You then load a document:
-
-```ruby
-require 'doc2pdf'
-
-# passing the path
-document = Doc2pdf::Document.new(file: 'my_document.doc')
-
-# passing the file stream
-document = Doc2pdf::Document.new(file: File.open('my_document.doc'))
-
-# passing the uri of a remote resource
-document = Doc2pdf::Document.new(file: 'https://mywebsite.com/my_document.doc')
-```
-
-With the _replacer_ in place and a document, you can then replace all the placeholders in your document and produce the putput files:
+With the _replacer_ in place, you can then replace all the placeholders in your document and produce the output files:
 
 ```ruby
 require 'doc2pdf'
 
 replacer = # ...
-document = # ...
+
+# You can specify a local file or a remote one:
+file_or_url = 'input.docx'
+file_or_url = 'https://domain.com/docs/input.docx'
 
 Doc2pdf.replace_and_save!(
-  document: document,
+  file: file_or_url,
   replacer: replacer,
-  output_base_path: './path/to/document'
+  output_path: './path/to/document.pdf'
 )
 ```
 
-This will produce:
+## Tempfiles
 
-- `./path/to/document.doc`
-- `./path/to/document.pdf`
+Suppose you need to use a tempfile also for the output:
+
+```ruby
+file_or_url = 'https://domain.com/docs/input.docx'
+outfile = Tempfile.new
+
+Doc2pdf.replace_and_save!(
+  file: file_or_url,
+  replacer: replacer,
+  output_path: outfile.path
+)
+```
+
+Here you can use `outfile` for anything you want.
 
 ## Development
 
